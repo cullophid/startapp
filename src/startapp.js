@@ -20,7 +20,7 @@ const futureEnhancer = createStore => (reducer, initState, enhancer) => {
 
 
 
-const startApp= ({view, model, update, enhancers}) => {
+const startApp= ({view, model, update, enhancers = []}) => {
   const store = createStore(update, model, compose(...enhancers, futureEnhancer))
   view(store.dispatch, store.getState())
   store.subscribe(() => view(store.dispatch, store.getState()))
