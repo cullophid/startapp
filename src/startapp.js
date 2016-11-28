@@ -20,10 +20,25 @@ const resolveState = (update, action) => Future((_, resolve) => {
     const next = update(state, action)
     if (!Array.isArray(next)) throw new Error('reducer must return a pair of [state, Future]')
     const [nextState, nextCommand] = next
-    return nextCommand ? nextCommand.fork(resolver(done, newState), resolver(done, newState)) : done(newState)
+    if (nextCommand) {
+      nextCommand.fork(
+        resolver(done, nextState),
+        resolver(done, nextState)
+      )
+    } else {
+      done(nextState)
+    }
   }
   resolver(resolve, null)(action)
 })
 
+const startAppServer = ({update, view, action}) => Future((_, resolve) => {
+  resolveState(update, action)
+    .fork(
+      () => {},
+      state => resolve(view(state))
+    )
+})
 
-module.exports = {startApp, resolveState}
+
+module.exports = {startApp, resolveState, startAppServer}
