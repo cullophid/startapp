@@ -1,21 +1,34 @@
 // @flow
 const React = require('react')
 const Future = require('fluture')
-const {createStore, compose} = require('redux')
+const {createStore, compose, applyMiddleware} = require('redux')
 
-const command = store => next => action => {
-  return next(action)
+
+const forkFutures = (dispatch, state) => {
+  if (!Array.isArray(state)) throw new Error('Update function must return a pair of [State, Future]')
+  const [nextState, future] = state
+  if (future) future.fork(dispatch, dispatch)
+  return nextState
 }
 
-const startApp= ({view, update}) => {
-  const store = createStore(update, model, command)
+const futureEnhancer = createStore => (reducer, initState, enhancer) => {
+  const store = createStore(reducer, initState, enhancer)
+  const getState = () => forkFutures(store.dispatch, store.getState())
+
+  return Object.assign({}, store, {getState})
+}
+
+
+
+const startApp= ({view, model, update, enhancers}) => {
+  const store = createStore(update, model, compose(...enhancers, futureEnhancer))
   view(store.dispatch, store.getState())
   store.subscribe(() => view(store.dispatch, store.getState()))
   return store
 }
 
 
-const resolveState = (update, action) => Future((_, resolve) => {
+const resolveState = (update, model, action) => Future((_, resolve) => {
   const resolver = (done, state) => action => {
     const next = update(state, action)
     if (!Array.isArray(next)) throw new Error('reducer must return a pair of [state, Future]')
@@ -29,11 +42,11 @@ const resolveState = (update, action) => Future((_, resolve) => {
       done(nextState)
     }
   }
-  resolver(resolve, null)(action)
+  resolver(resolve, model)(action)
 })
 
-const startAppServer = ({update, view, action}) => Future((_, resolve) => {
-  resolveState(update, action)
+const startAppServer = ({update, view, model, action}) => Future((_, resolve) => {
+  resolveState(update, model, action)
     .fork(
       () => {},
       state => resolve(view(state))
