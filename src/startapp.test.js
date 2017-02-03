@@ -1,7 +1,7 @@
 //@flow
 import test from 'tape'
 import sinon from 'sinon'
-import app from './start-app'
+import app from './startapp'
 
 global.document = {
   addEventListener: (type, f) => f()
