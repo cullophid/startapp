@@ -13,7 +13,7 @@ export default ({model, view, update, subs = [], hooks = {}}) => {
     callHook('onAction', action, ...args)
     const next = update[action](state, ...args, msg)
     if (!Array.isArray(next)) throw new Error('Update must return a tuple')
-    callHook('onUpdate', state, ...args)
+    callHook('onUpdate', state, next[0])
     state = next[0]
 
     if (next[1]) {

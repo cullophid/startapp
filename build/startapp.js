@@ -40,7 +40,7 @@ exports.default = function (_ref) {
       callHook.apply(undefined, ['onAction', action].concat(args));
       var next = update[action].apply(update, [state].concat(args, [msg]));
       if (!Array.isArray(next)) throw new Error('Update must return a tuple');
-      callHook.apply(undefined, ['onUpdate', state].concat(args));
+      callHook('onUpdate', state, next[0]);
       state = next[0];
 
       if (next[1]) {
