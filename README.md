@@ -1,6 +1,6 @@
-# StartApp
+#StartApp
 
-# Usage
+##Usage
 
 ```js
 import app from 'startapp'
