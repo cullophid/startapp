@@ -1,10 +1,11 @@
 {
   "name": "oolon-startapp",
   "version": "1.0.1",
-  "main": "src/startapp.js",
+  "main": "build/startapp.js",
   "license": "MIT",
   "scripts": {
     "test": "tape -r babel-register 'src/*.test.js' | tap-spec",
+    "build": "babel -d build src",
     "watch": "tape-watch -r babel-register 'src/*.test.js' | tap-spec"
   },
   "devDependencies": {
