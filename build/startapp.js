@@ -14,7 +14,7 @@ var merge = function merge(a, b) {
 
 exports.default = function (_ref) {
   var init = _ref.init,
-      view = _ref.view,
+      render = _ref.render,
       update = _ref.update,
       _ref$hooks = _ref.hooks,
       hooks = _ref$hooks === undefined ? {} : _ref$hooks;
@@ -51,7 +51,7 @@ exports.default = function (_ref) {
         }, 0);
       }
 
-      view(state, msg);
+      render(state, msg);
     };
   };
 
@@ -67,5 +67,5 @@ exports.default = function (_ref) {
     return merge(o, _defineProperty({}, k, dispatch(k)));
   }, {});
 
-  view(state, msg);
+  render(state, msg);
 };
