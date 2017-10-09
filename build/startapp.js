@@ -13,15 +13,13 @@ var merge = function merge(a, b) {
 };
 
 exports.default = function (_ref) {
-  var model = _ref.model,
+  var init = _ref.init,
       view = _ref.view,
       update = _ref.update,
-      _ref$subs = _ref.subs,
-      subs = _ref$subs === undefined ? [] : _ref$subs,
       _ref$hooks = _ref.hooks,
       hooks = _ref$hooks === undefined ? {} : _ref$hooks;
 
-  var state = model;
+  var state = init;
   var msg = void 0;
   var callHook = function callHook(hook) {
     for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -57,10 +55,12 @@ exports.default = function (_ref) {
     };
   };
 
+  var getState = function getState() {
+    return state;
+  };
+
   document.addEventListener("DOMContentLoaded", function () {
-    subs.forEach(function (sub) {
-      return sub(state, msg);
-    });
+    callHook('onInit', state, msg);
   });
 
   msg = Object.keys(update).reduce(function (o, k) {
