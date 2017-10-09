@@ -3,7 +3,7 @@
 const merge = (a, b) => Object.assign({}, a, b)
 
 
-export default ({init, view, update, hooks = {}}) => {
+export default ({init, render, update, hooks = {}}) => {
   let state =init 
   let msg
   const callHook = (hook, ...args) =>
@@ -22,7 +22,7 @@ export default ({init, view, update, hooks = {}}) => {
         , 0)
     }
 
-    view(state, msg)
+    render(state, msg)
   }
 
   const getState = () => state;
@@ -33,5 +33,5 @@ export default ({init, view, update, hooks = {}}) => {
 
   msg = Object.keys(update).reduce((o, k) => merge(o, {[k]: dispatch(k)}), {})
 
-  view(state, msg)
+  render(state, msg)
 }
