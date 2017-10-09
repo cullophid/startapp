@@ -3,8 +3,8 @@
 const merge = (a, b) => Object.assign({}, a, b)
 
 
-export default ({model, view, update, subs = [], hooks = {}}) => {
-  let state = model
+export default ({init, view, update, hooks = {}}) => {
+  let state =init 
   let msg
   const callHook = (hook, ...args) =>
     hooks[hook] && hooks[hook](...args)
@@ -25,8 +25,10 @@ export default ({model, view, update, subs = [], hooks = {}}) => {
     view(state, msg)
   }
 
+  const getState = () => state;
+
   document.addEventListener("DOMContentLoaded", () => {
-    subs.forEach(sub => sub(state, msg))
+    callHook('onInit', state, msg)
   })
 
   msg = Object.keys(update).reduce((o, k) => merge(o, {[k]: dispatch(k)}), {})
